@@ -1,41 +1,29 @@
 import  express  from 'express'
 import {Server} from 'http'
+import path, { dirname } from 'path'
+import mustacheExpress from 'mustache-express'
+//importando as rotas
+import mainRoutes from './routes/index'
+
 
 //usar o EXPRESS
 const server = express()
 
+server.set('view engine','mustache')
 
-server.get('/',(req,res) =>{
-    res.send("Gustavo oi!")
+
+//usando rotas
+server.use(mainRoutes)
+
+//criando a rota da publica
+server.use(express.static(path.join(__dirname,'../public')))
+
+server.set('views',path.join(__dirname,'views'))
+server.engine('mustache',mustacheExpress())
+
+server.use((req, res) =>{
+    res.status(404).send("Página não encontrada")
 })
-
-
-server.get('/sobrenos',(req,res) =>{
-    res.send("walle!")
-})
-
-
-server.get('/cachorromorreu',(req,res) =>{
-    res.send("Noticia!")
-})
-
-//rota dinamica
-server.get('/noticia/:slung',(req,res) =>{
-    let slung: string = req.params.slung
-    res.send(`Noticia: ${slung}`)
-})
-
-
-server.get('/voo/:origem-:destino',(req,res) =>{
-    let {origem, destino} = req.params
-    res.send(`Procurando voos de ${origem} ate ${destino}`)
-    
-})
-
-
-
-
-
 
 
 //gerando o servidor na porta 3000
